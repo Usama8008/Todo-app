@@ -19,6 +19,9 @@
                     <button type="submit" class="flex items-center bg-blue-500 text-white py-2 px-4 rounded-md shadow hover:bg-blue-600 transition">
                         <i class="fas fa-save mr-2"></i> Update Task
                     </button>
+                    <a href="{{route('tasks.index')}}" class="flex items-center bg-black text-white py-2 px-4 rounded-md shadow hover:bg-gray-900 transition">
+                        <i class="fas fa-save mr-2"></i> Back
+                    </a>
                 </div>
             </form>
         </div>
