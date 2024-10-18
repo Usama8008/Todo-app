@@ -1,25 +1,29 @@
 <x-app-layout>
+    @if(session('success'))
+    <div id="successAlert" class="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-md shadow-lg">
+        <strong>Success!</strong> {{ session('success') }}
+    </div>
+    @endif
     <div class="container mx-auto py-10">
         <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
-            <!-- Add Task Section -->
             <div class="bg-white shadow-lg rounded-lg p-6 col-span-1 md:col-span-2">
                 <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Add Task</h1>
 
                 <form action="{{ route('tasks.store') }}" method="POST" class="space-y-4">
                     @csrf
-                    <!-- Task Description -->
+                    
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-700">Task Description</label>
                         <textarea name="description" id="description" placeholder="Enter your task description" rows="4" class="block w-full border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md p-3 shadow-sm" required></textarea>
                     </div>
 
-                    <!-- Due Date -->
+                   
                     <div>
                         <label for="due_date" class="block text-sm font-medium text-gray-700">Due Date</label>
                         <input type="date" name="due_date" id="due_date" class="block w-full border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-md p-3 shadow-sm">
                     </div>
 
-                    <!-- Add Task Button -->
+                    
                     <div class="flex justify-end">
                         <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded-md shadow hover:bg-blue-600 transition">
                             Add Task
@@ -29,11 +33,10 @@
             </div>
 
             <!-- Task Table Section -->
-            <div class="bg-white shadow-lg rounded-lg p-6 col-span-1 md:col-span-4">
-                <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Your Tasks</h1>
+            <div class="bg-white shadow-lg rounded-lg p-6 col-span-1 md:col-span-4">                
 
-                <!-- Filter Buttons -->
-                <div class="mb-6 flex justify-center space-x-3">
+                <h1 class="text-3xl font-bold mb-6 text-gray-800 text-center">Your Tasks</h1>
+                <div class="mb-6 flex justify-start space-x-3">
                     <a href="{{ route('tasks.index', ['filter' => 'all']) }}" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-md shadow hover:bg-gray-300 transition">
                         All Tasks
                     </a>
@@ -50,18 +53,19 @@
                     <table class="min-w-full bg-white rounded-lg shadow-lg">
                         <thead class="bg-gray-200 text-gray-800">
                             <tr>
-                                <th class="text-left py-3 px-4 uppercase font-semibold text-sm w-1/2">Task Description</th>
-                                <th class="text-left py-3 px-4 uppercase font-semibold text-sm w-1/6 text-right">Due Date</th>
-                                <th class="text-left py-3 px-4 uppercase font-semibold text-sm w-1/6 text-right">Status</th>
-                                <th class="text-left py-3 px-4 uppercase font-semibold text-sm w-1/6 text-right">Actions</th>
+                                <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Task Description</th>
+                                <th class="text-center py-3 px-4 uppercase font-semibold text-sm">Due Date</th>
+                                <th class="text-center py-3 px-4 uppercase font-semibold text-sm">Status</th>
+                                <th class="text-center py-3 px-4 uppercase font-semibold text-sm">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-700">
+                            @if (!empty($tasks))
                             @foreach ($tasks as $task)
                             <tr class="hover:bg-gray-100 transition">
                                 <td class="py-3 px-4">
                                     <span class="{{ $task->is_completed ? 'line-through text-gray-400' : '' }}">
-                                        {{ \Str::limit($task->description, 50) }}
+                                        {{ \Str::limit($task->description, 20) }}
                                     </span>
                                     <button type="button" data-description="{{ $task->description }}" class="view-button text-blue-500 hover:underline ml-2">
                                         Read more
@@ -92,6 +96,11 @@
                                 </td>
                             </tr>
                             @endforeach
+                            @else
+                            <tr>
+                                <td colspan="5" class="text-center"> No Tasks Found</td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -112,10 +121,8 @@
         </div>
     </div>
 </x-app-layout>
-
-<!-- JavaScript for AJAX (Fetch API) and Modal handling -->
 <script>
-    // Modal handling for viewing task description
+    
     document.querySelectorAll('.view-button').forEach(button => {
         button.addEventListener('click', function() {
             const description = this.getAttribute('data-description');
@@ -143,14 +150,26 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update task status in the UI
+                   
                     document.getElementById(`status-${taskId}`).innerHTML = 'Completed';
                     document.getElementById(`status-${taskId}`).classList.remove('text-yellow-600');
                     document.getElementById(`status-${taskId}`).classList.add('text-green-600');
-                    // Remove the "Mark Complete" button
+                 
                     document.querySelector(`button[data-id="${taskId}"]`).remove();
                 }
             });
         });
     });
+
+// Show success alert
+    function showSuccessAlert(message) {
+        const alertBox = document.getElementById('successAlert');
+        alertBox.textContent = message; 
+        alertBox.classList.remove('hidden'); 
+
+        setTimeout(() => {
+            alertBox.classList.add('hidden'); 
+        }, 3000);
+    }
+
 </script>
