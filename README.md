@@ -3,9 +3,13 @@ The Task Management System is a web-based application that allows users to manag
 
 # Features
 Add new tasks with a description and due date.
+
 View a list of all tasks.
+
 Mark tasks as completed.
+
 Edit or delete tasks.
+
 Filter tasks by status: All, Pending, Completed.
 
 # Steps to Install
