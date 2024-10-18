@@ -161,15 +161,17 @@
         });
     });
 
-// Show success alert
-    function showSuccessAlert(message) {
-        const alertBox = document.getElementById('successAlert');
-        alertBox.textContent = message; 
-        alertBox.classList.remove('hidden'); 
+// Function to show success alert
+document.addEventListener('DOMContentLoaded', function() {
+    const alertBox = document.getElementById('successAlert');
 
+    if (alertBox) {
         setTimeout(() => {
             alertBox.classList.add('hidden'); 
         }, 3000);
     }
+});
+
+
 
 </script>
